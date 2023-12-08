@@ -1,0 +1,15 @@
+.Input {
+  border: 2px solid grey;
+  padding: 8px 16px;
+  margin: 8px 0;
+  border-radius: 25px;
+  
+  &.error {
+    border-color: red;
+  }
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+}

@@ -1,0 +1,19 @@
+.Navigation {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 5px;
+  background-color: blue;
+  color: white;
+
+  .Right-Navigation {
+    display: flex;
+  }
+
+  .Left-Navigation {
+    display: flex;
+
+    li {
+      margin: 0 5px;
+    }
+  }
+}
