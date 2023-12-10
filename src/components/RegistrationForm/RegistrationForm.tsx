@@ -1,37 +1,43 @@
-import React, { ChangeEvent, FormEvent, useState } from "react"
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import InputField from "../Input/InputField"
 import Button from "../Button/Button"
 import "./RegistrationForm.scss"
 import Header from "../Header/Header"
+import { useRegisterUserMutation } from "../../services/authApi"
+import { useNavigate, Link } from "react-router-dom"
 
 const RegistrationForm = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
-    passwordConfirmation: "",
+    password_confirmation: "",
   })
 
   const [errors, setErrors] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
-    passwordConfirmation: "",
+    password_confirmation: "",
   })
+
+  const [registerUser, { isLoading, isSuccess, isError, error }] =
+    useRegisterUserMutation()
 
   const validate = () => {
     let tempErrors = { ...errors }
-    tempErrors.firstName = formData.firstName ? "" : "First name is required"
-    tempErrors.lastName = formData.lastName ? "" : "Last name is required"
-    tempErrors.email = formData.email ? "" : "Email is required"
-    tempErrors.email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
-      ? ""
-      : "Email is not valid"
+    tempErrors.first_name = formData.first_name ? "" : "First name is required"
+    tempErrors.last_name = formData.last_name ? "" : "Last name is required"
+    tempErrors.email =
+      formData.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+        ? ""
+        : "Email is required or not valid"
     tempErrors.password = formData.password ? "" : "Password is required"
-    tempErrors.passwordConfirmation =
-      formData.password === formData.passwordConfirmation
+    tempErrors.password_confirmation =
+      formData.password === formData.password_confirmation
         ? ""
         : "Passwords do not match"
 
@@ -44,15 +50,28 @@ const RegistrationForm = () => {
     setFormData({ ...formData, [name]: value })
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (validate()) {
-      console.log(formData)
+      await registerUser(formData).unwrap()
     }
   }
 
   const RegistrationFormHeader = `RegistrationHeader`
-  const RegistrationButton = `RegistrationButton`
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/login")
+    }
+  }, [isSuccess, navigate])
+
+  // if (isLoading) {
+  //   return <div>Loading...</div>
+  // }
+
+  if (isError) {
+    return <div>Error: {error?.data.message}</div>
+  }
 
   return (
     <>
@@ -61,25 +80,25 @@ const RegistrationForm = () => {
         level={3}
         text="Registration Form"
       />
-      <form className="Form" onSubmit={handleSubmit}>
+      <form className="RegistrationForm" onSubmit={handleSubmit}>
         <InputField
           type="text"
-          name="firstName"
-          value={formData.firstName}
+          name="first_name"
+          value={formData.first_name}
           onChange={handleChange}
           placeholder="First Name"
-          error={errors.firstName}
+          error={errors.first_name}
         />
         <InputField
           type="text"
-          name="lastName"
-          value={formData.lastName}
+          name="last_name"
+          value={formData.last_name}
           onChange={handleChange}
           placeholder="Last Name"
-          error={errors.lastName}
+          error={errors.last_name}
         />
         <InputField
-          type="text"
+          type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
@@ -87,7 +106,7 @@ const RegistrationForm = () => {
           error={errors.email}
         />
         <InputField
-          type="text"
+          type="password"
           name="password"
           value={formData.password}
           onChange={handleChange}
@@ -95,17 +114,22 @@ const RegistrationForm = () => {
           error={errors.password}
         />
         <InputField
-          type="text"
-          name="passwordConfirmation"
-          value={formData.passwordConfirmation}
+          type="password"
+          name="password_confirmation"
+          value={formData.password_confirmation}
           onChange={handleChange}
           placeholder="Password Confirmation"
-          error={errors.passwordConfirmation}
+          error={errors.password_confirmation}
         />
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Registering..." : "Register"}
+        </Button>
       </form>
-      <Button customClassName={RegistrationButton} type="submit">
-        Register
-      </Button>
+      {isSuccess && <h4 className="">Successfully Registered</h4>}
+      {isError && <div>Error: {error?.data.message}</div>}
+      <Link className="RegistrationForm" to="/login">
+        Already have an account? Log in here.
+      </Link>
     </>
   )
 }

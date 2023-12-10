@@ -1,0 +1,32 @@
+.AddUserForm {
+  display: flex;
+  flex-direction: column;
+  grid-column: 1 / -1;
+  margin-top: 16px;
+
+  @media screen and (min-width: 768px) {
+    grid-column: span 6 / span 6;
+    grid-column-start: 4;
+  }
+}
+
+.UserList {
+  display: grid;
+  column-gap: 24px;
+  grid-column: 1 / -1;
+  
+  @media screen and (min-width: 768px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .UserListItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 2px solid black;
+    border-radius: 25px;
+    margin: 8px 0;
+    padding: 16px;
+    box-shadow: 2px 4px grey;
+  }
+}
