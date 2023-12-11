@@ -30,8 +30,23 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onAddUser(newUser)
-    setNewUser({ first_name: "", last_name: "", email: "" }) // Reset form
+    if (validate()) {
+      onAddUser(newUser)
+      setNewUser({ first_name: "", last_name: "", email: "" })
+    }
+  }
+
+  const validate = () => {
+    let tempErrors = { ...errors }
+    tempErrors.first_name = newUser.first_name ? "" : "First name is required"
+    tempErrors.last_name = newUser.last_name ? "" : "Last name is required"
+    tempErrors.email =
+      newUser.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newUser.email)
+        ? ""
+        : "Email is required or not valid"
+
+    setErrors(tempErrors)
+    return Object.values(tempErrors).every((x) => x === "")
   }
 
   return (

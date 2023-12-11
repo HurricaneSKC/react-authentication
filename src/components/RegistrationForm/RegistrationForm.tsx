@@ -65,10 +65,6 @@ const RegistrationForm = () => {
     }
   }, [isSuccess, navigate])
 
-  // if (isLoading) {
-  //   return <div>Loading...</div>
-  // }
-
   if (isError) {
     return <div>Error: {error?.data.message}</div>
   }

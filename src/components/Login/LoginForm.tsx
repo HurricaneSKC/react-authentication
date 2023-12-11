@@ -5,13 +5,19 @@ import { useLoginUserMutation } from "../../services/authApi"
 import { useNavigate, Link } from "react-router-dom"
 import "./LoginForm.scss"
 
-const LoginForm = () => {
+interface LoginFormProps {
+  onLoginSuccess: () => void
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const [formData, setFormData] = useState({ email: "", password: "" })
   const [loginErrors, setLoginErrors] = useState({ email: "", password: "" })
   const [errors, setErrors] = useState()
   const [loginUser, { isLoading, isSuccess, isError, error }] =
     useLoginUserMutation()
   const navigate = useNavigate()
+
+  console.log("IsLogin", isSuccess)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -23,7 +29,7 @@ const LoginForm = () => {
     if (validate()) {
       try {
         const userData = await loginUser(formData).unwrap()
-        console.log("userData-Token", userData)
+        console.log("authToken", userData)
         localStorage.setItem("authenticationToken", userData.token)
       } catch (error) {
         setErrors(error?.data?.message || "Failed to log in.")
@@ -41,15 +47,18 @@ const LoginForm = () => {
     setLoginErrors(tempErrors)
     return Object.values(tempErrors).every((x) => x === "")
   }
-  if (isError) {
-    setErrors(error?.data?.message || "Failed to log in.")
-  }
 
   useEffect(() => {
+    console.log("Is Login Successful?", isSuccess)
     if (isSuccess) {
+      onLoginSuccess()
       navigate("/users")
     }
-  }, [isSuccess, navigate])
+
+    if (isError) {
+      setErrors(error?.data?.message || "Failed to log in.")
+    }
+  }, [error, isError, isSuccess, navigate, onLoginSuccess])
 
   return (
     <>

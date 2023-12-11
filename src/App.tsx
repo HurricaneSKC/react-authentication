@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 
 import LoginForm from "./components/Login/LoginForm"
 import Navigation from "./components/Navigation/Navigation"
-import RegistrationForm from "./components/RegistrationForm"
+import RegistrationForm from "./components/RegistrationForm/RegistrationForm"
 import UserList from "./components/UserList/UserList"
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute"
 
@@ -22,13 +22,20 @@ function App() {
     setIsAuthenticated(false)
   }
 
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true)
+  }
+
   return (
-    <BrowserRouter>
+    <>
       <Navigation isAuthenticated={isAuthenticated} onLogout={handleLogout} />
       <div className="App">
         <Routes>
           <Route path="/register" element={<RegistrationForm />} />
-          <Route path="/login" element={<LoginForm />} />
+          <Route
+            path="/login"
+            element={<LoginForm onLoginSuccess={handleLoginSuccess} />}
+          />
           <Route
             path="/"
             element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
@@ -38,7 +45,7 @@ function App() {
           </Route>
         </Routes>
       </div>
-    </BrowserRouter>
+    </>
   )
 }
 
