@@ -1,3 +1,7 @@
+## Pre-startup notes
+
+Update const ENVIRONMENT path in (./src/services/authApi.ts) to server path for the api
+
 # vite-template-redux
 
 Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Testing Library](https://github.com/testing-library/react-testing-library) to create a modern [React](https://react.dev/) app compatible with [Create React App](https://create-react-app.dev/)
@@ -5,13 +9,6 @@ Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Test
 ```sh
 npx degit reduxjs/redux-templates/packages/vite-template-redux my-app
 ```
-
-## Goals
-
-- Easy migration from Create React App or Vite
-- As beginner friendly as Create React App
-- Optimized performance compared to Create React App
-- Customizable without ejecting
 
 ## Scripts
 
